@@ -30,3 +30,11 @@ def getAllImages(input=None):
             pass
 
     return json_collection
+
+import requests
+from app.config import config 
+
+def fetchImagesFromAPI(): 
+
+    response = requests.get(config.DEFAULT_REST_API_URL)
+    return response.json() 

@@ -36,3 +36,13 @@ def fromRepositoryIntoCard(repo_dict):
                         first_seen=repo_dict['first_seen'],
                 )
     return card
+
+def mapToCard(api_data): 
+
+    return {
+        "id": api_data.get("id", None), 
+        "image": api_data.get("image", "default.jpg"),
+        "name": api_data.get("name", "No Name Available"), 
+        "status": api_data.get("status", "unknown"), 
+        "description": api_data.get("description", "No description")
+    } 

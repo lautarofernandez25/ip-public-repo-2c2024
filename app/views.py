@@ -44,3 +44,79 @@ def deleteFavourite(request):
 @login_required
 def exit(request):
     pass
+
+from django.shortcuts import render 
+import requests 
+
+def home(request): 
+
+    API_URL = "http://localhost:3000"
+
+    try:
+        response = requests.get(API_URL)
+        response.raise_for_status()
+
+        images = response.json()
+
+    except Exception as e: 
+        print(f"Error al obtener imagenes: {e}")
+        images = [] 
+    
+    favorites = []
+
+    context ={
+        "images": images,
+        "favorites": favorites
+    }
+
+    return render(request, "home.html", context) 
+
+from django.shortcuts import render 
+from app.config import config 
+
+def fetchImagesFromAPI(): 
+
+    response = requests.get(config.DEFAULT_REST_API_URL)
+    return response.json()
+
+
+def home(request): 
+
+    images = fetchImagesFromAPI()
+    print(images)
+
+    context = {
+        "images": images 
+    }
+    return render(request, "home.html", context) 
+
+from django.shortcuts import render
+import requests
+
+def fetchImagesFromAPI():
+    
+    response = requests.get("http://localhost:3000") 
+    return response.json() 
+
+
+def mapToCard(api_data): 
+
+    return {
+        "id": api_data.get("id"),
+        "image": api_data.get("image", ""),
+        "name": api_data.get("name", "No Name Available"),
+        "status": api_data.get("status", "unknown"), 
+        "description": api_data.get("description", "No description available")
+    }
+
+def home(request): 
+
+    images_data = fetchImagesFromAPI()
+
+    images = [mapToCard(image) for image in images_data]
+
+    context = {
+        "images": images 
+    } 
+
+    return render(request, "home.html", context)
